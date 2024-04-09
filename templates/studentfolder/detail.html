@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block studentnav %}
+<ul class="nav navbar-nav">
+                <li class="nav-item">
+                    <a href="{% url 'notification' %}" class="nav-link">Notification</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'bookissue' %}" class="nav-link">Issued Books</a>
+                </li>
+               
+            </ul>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row shadow-lg">
+        <div class="col-md-5 mb-4 p-5">
+            <img src="{{ detail.book_image.url }}" class="card-img-top" alt="{{ detail.book_name }}">
+        </div>
+        <div class="col-md-6 p-5 mt-5">
+            <h4 class="card-title">Book Name : <u>{{ detail.book_name }}</u></h4>
+            <p class="card-text">{{ detail.description }}</p>
+            <p class="card-text"><strong>Author:</strong> {{ detail.author }}</p>
+            <p class="card-text"><strong>Category:</strong> {{ detail.get_category_display }}</p>
+            {% if book_issued  %}
+
+                <button class="btn btn-success">Issued</button>
+              
+               
+            {% else %}
+                <button id="request-button" data-book-id="{{ detail.id }}" class="btn btn-primary btn-hover">Request Book</button>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+   $(document).ready(function () {
+        $("#request-button").click(function () {
+            var button = $(this);
+            var bookId = button.data('book-id');
+            $.ajax({
+                type: 'GET',
+                url: "/requestbook/",
+                data: {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'book_id': bookId,
+                    'ajax_request': true
+                },
+                success: function (data) {
+                    console.log(data.message);
+                    if (data.status === 'pending') {
+                        button.replaceWith('<p>Request Sent</p>');
+                    } 
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}
+    

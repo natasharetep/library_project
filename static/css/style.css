@@ -1,0 +1,33 @@
+.home-bg{
+    background-image: url('/static/image/lbbg.jpg'); /* Adjust the path based on your project structure */
+    background-repeat: no-repeat;
+    background-size: cover; /* Adjust based on how you want the image to be displayed */
+ }
+
+ .content-block{
+ 	height: 100vh;
+ 	display: flex;
+ 	justify-content: center;
+ 	align-items: center;
+ }
+  @keyframes floatAnimation {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+      
+ .library{
+ 	font-size: 100px !important;
+ 	color: white;
+    animation: floatAnimation 2s infinite;
+    font-family: emoji;
+
+ }
+

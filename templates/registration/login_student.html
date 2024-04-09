@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container col-lg-5 mx-auto mt-5 shadow-lg">
+    
+        <!-- Admin login form -->
+<form method="post" action="{% url 'student_login' %}" class="p-5">
+    {% csrf_token %}
+    <h1>Student Login</h1>
+    <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" name="username" class="form-control" aria-describedby="emailHelp">
+    </div>
+    <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" name="password" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-success">Login</button>
+    <p>Don't have a account ? <a href="{% url 'signup' %}" class="text-success"> Create an Account</a></p>
+</form>
+
+    
+</div>
+{% endblock %}

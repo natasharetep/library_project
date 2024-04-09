@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+	<div class="row shadow-lg">
+	<div class="col-md-5 mb-4 p-5">
+		<img src="{{ detail.book_image.url }}" class="card-img-top" alt="{{ detail.book_name }}">
+	</div>
+	<div class="col-md-6 p-5 mt-5">
+		  <h4 class="card-title">Book Name : <u>{{ detail.book_name }}</u></h4>
+                    <p class="card-text">{{ detail.description}}</p>
+                    <p class="card-text"><strong>Author:</strong> {{ detail.author }}</p>
+                    <p class="card-text"><strong>Category:</strong> {{ detail.get_category_display }}</p>
+
+                    {% if books.book_name in issued_book %}
+
+                <p>Issued</p>
+                {% if  issued_book  %}
+                <p><button data-rqst-id="{{ books.id }}" class="btn btn-hover rqst">Request</button></p>
+                
+                
+                {% endif %}
+                {% else %}
+                <p><button data-book-id="{{ books.id }}" class="book btn-success btn">Issue book</button></p>
+                {% endif %}
+                
+			
+	</div>
+
+	</div>
+</div>
+{% endblock	 %}
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script> 
+	$(document).ready(function(){
+    $('.book').on('click', function (){
+        var bookid = $(this).data('book-id')
+
+        // Check if bookid is valid
+        if (bookid) {
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'bookissue' %}",
+                data: {
+                    'bookid': bookid,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(response){
+                    console.log('add')
+                },
+                error: function (){
+                    console.log('error in')
+                }
+            });
+        } else {
+            console.log('Invalid bookid');
+        }
+      });
+
+        $('.rqst').on('click', function (){
+        var rqstbook = $(this).data('rqst-id')
+
+        if (rqstbook){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'request_book' %}",
+                data:{
+                    'rqstbook': rqstbook,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function (){
+                    console.log('Sent notification')
+                   
+                },
+                error: function() {
+                    console.log('wrong input')
+                }
+            });
+        }
+        else {
+            console.log('Invalid');
+        }
+    });
+
+});
+
+</script>
+{% endblock	 %}
+
+
+
+
+   # context = {}
+    # issued_books = BookIssue.objects.filter(bookname__isnull=False)
+    # book = [name.bookname.book_name for name in issued_books]
+    # # print(book ,'frufurh')
+    # context ['issued_book'] = book

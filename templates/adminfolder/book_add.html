@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block studentnav %}
+<ul class="nav navbar-nav">
+                <li class="nav-item">
+                    <a href="{% url 'notification' %}" class="nav-link">Notification</a>
+                </li>
+               
+            </ul>
+{% endblock %}
+{% block content %}
+
+
+<div class="container" id="addform">
+	<div class="mx-auto">
+		
+		{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<div class="d-inline">
+	<h1>Add Book <small><a href="{% url 'admin_dashboard' %}">Dashboard</a> </small></h1></div>
+<form method="POST" enctype="multipart/form-data"  action="{% url 'book_add' %}" class="form-control shadow-lg">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success mb-5">Submit</button>
+</form>
+</div>
+
+{% endblock %}

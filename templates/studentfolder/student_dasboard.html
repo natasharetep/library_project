@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block studentnav %}
+<ul class="nav navbar-nav">
+                <li class="nav-item">
+                    <a href="{% url 'notification' %}" class="nav-link">Notification</a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'bookissue' %}" class="nav-link">Issued Books</a>
+                </li>
+               
+            </ul>
+{% endblock %}
+{% block content %}
+
+<div class="container">
+<h1>All Books</h1>
+  <div class="container">
+        {% for data in list_data %}
+        <p>{{ data }}</p>
+        {% endfor %}
+    </div>
+  <div class="row">
+
+        <form method="get" action="{% url 'student_dasboard' %}" class="pb-5 pt-3">
+    <label for="category">Select Book Category:</label>
+    <select name="category" id="category">
+        <option value="">All Categories</option>
+        {% for category, category_name in book_categories %}
+            <option value="{{ category }}" {% if category == book_category %}selected{% endif %}>{{ category_name }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-success">Select</button>
+</form>
+        {% for book in book_list %}
+        <div class="col-md-3 mb-4">
+            <div class="card"  style="width: 100%; height: 100%;">
+                <a href="{% url 'detail' book.id %}"><img src="#" class="card-img-top" alt="{{ book.book_name }}"></a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ book.book_name }}</h5>
+                    <p class="card-text">{{ book.description|truncatechars:50 }}</p>
+                    <p class="card-text"><strong>Author:</strong> {{ book.author }}</p>
+                    <p class="card-text"><strong>Category:</strong> {{ book.get_category_display }}</p>
+                    <p class="card-text"><strong>Entry Date:</strong> {{ book.entry_date }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>  
+  <!--   <div class="container" id="book_list">
+        <p > </p>
+        <img src="">
+    </div> -->
+
+{% endblock %}
+
+{% block script %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function (){
+        function Booklist() {
+            $.ajax({
+                url:'{% url 'book-api' %}',
+                method: 'GET',
+                data: {
+                    'ajax_request': true
+                },
+                success: function (data){
+                    console.log('Successfully',data)
+                    // for(var i=0; i<=data.length; i++){
+                    //     var item = $('<p>' i '</p>');
+                    //     $(#book_list).append(item);                    
+                    // }
+                    for (var i = 0; i < data.length; i++) {
+                        var item = $('<div>'+('<p>' + data[i].id + '</p>' + '<p>' + data[i].book_name + '</p>' +'<p>' + data[i].author + '</p>' + '<p>' + data[i].category + '</p>' +'<img src="' + data[i].book_image + '">') + '<div>');  // Assuming there is a 'title' attribute in your Book model
+                        $('#book_list').append(item);
+                    }
+                },
+                error: function (data){
+                    console.log('Error', error)
+                },
+            });
+        }
+        Booklist();
+    });
+   
+</script>
+{% endblock %}

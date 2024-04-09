@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block studentnav %}
+<ul class="nav navbar-nav">
+  <li class="nav-item">
+    <a href="{% url 'notification' %}" class="nav-link">Notification</a>
+  </li>
+  <li class="nav-item">
+    <a href="{% url 'bookissue' %}" class="nav-link">Issued Books</a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h3 class="text-center mb-4">Issued Books</h3>
+
+  <div class="row">
+    {% for book in bookissue %}
+    <div class="col-md-4 mb-4">
+      <div class="card h-100 d-flex flex-column p-3">
+        <div class="card-body">
+          <h5 class="card-title">Book Name: <i>{{ book.bookname }}</i></h5>
+          <p class="card-text">Issued Date: {{ book.issue_date }}</p>
+          <p class="card-text">Should Return by: {{ book.return_date }}</p>
+        </div>
+        <div class="mt-auto">
+          <div class="d-flex justify-content-between align-items-center">
+            {% if book.returned %}
+            <span class="text-success">Book Returned</span>
+            {% else %}
+            <button class="return_button btn btn-primary" data-book-id="{{ book.id }}">Return Book</button>
+            {% endif %}
+            <a href="#" class="btn btn-secondary">View Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script> 
+    $(document).ready(function (){
+        $(".return_button").click(function () {
+            var button = $(this);
+            var bookId = button.data('book-id');
+            $.ajax({
+                url : '{% url 'return_book' %}',
+                method : 'GET',
+                data : {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    'return_book_id': bookId,
+                    'ajax_request': true
+                },
+                success:function(data){
+                    console.log('book returned ', data)
+                    // Update the button text or disable it to indicate the book is returned
+                    button.text('Book Returned').prop('disabled', true);
+                },
+                error:function(error){
+                    console.log(error)
+                },
+            });
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block studentnav %}
+<ul class="nav navbar-nav">
+  <li class="nav-item">
+    <a href="{% url 'notification' %}" class="nav-link">Notification</a>
+  </li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h1 class="text-center mb-4">Student Information</h1>
+
+  {% regroup record by student as user_records %}
+
+  {% for user_record in user_records %}
+    <h2 class="mb-3">{{ user_record.grouper }}</h2>
+    <div class="row">
+      {% for data in user_record.list %}
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ data.student }}</h5>
+              <p class="card-text">Book: {{ data.bookname }}</p>
+              <p class="card-text">Issued Date: {{ data.issue_date }} <br>
+                Should return by: {{ data.return_date }}</p>
+              <a href="{% url 'show_book' %}" class="btn btn-primary">View Details</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

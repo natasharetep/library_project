@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Book Requests</h2>
+      {% for request in book_requests %}
+        <div>
+          Book: {{ request.book.book_name }}<br>
+          User: {{ request.user.username }}<br>
+          <a href="{% url 'respond_to_request' request.id 'accept' %}">Accept</a>
+          <a href="{% url 'respond_to_request' request.id 'reject' %}">Reject</a>
+        </div>
+        <hr>
+      {% endfor %}
+
+{% endblock %}     
